@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Buscador</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: white; }
+        .container { width: 75%; margin: 70px auto; }
+        h1 { text-align: center; font-size: 42px; margin-bottom: 50px; }
+        .btn { padding: 12px 22px; border: 1px solid #17c8f5; color: #17c8f5; background: white; border-radius: 5px; text-decoration: none; font-size: 20px; cursor: pointer; margin-right: 10px; }
+        .btn-success { border-color: #198754; color: #198754; }
+        input { width: 100%; padding: 14px; font-size: 20px; margin-top: 10px; margin-bottom: 25px; border: 1px solid #ccc; border-radius: 4px; }
+        label { font-size: 20px; }
+        table { width: 100%; border-collapse: collapse; background: #212529; color: white; font-size: 18px; margin-top: 40px; display: none; }
+        th, td { padding: 16px; border-bottom: 1px solid #444; text-align: left; }
+        th { font-weight: bold; width: 30%; }
+        .center { text-align: center; margin-bottom: 40px; }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔍 Buscador de Productos</h1>
+
+        <label>Código del producto</label>
+        <input type="text" id="codigo" placeholder="Ejemplo: P001">
+
+        <div class="center">
+            <button class="btn" onclick="buscarProducto()">Buscar</button>
+            <a class="btn btn-success" href="principal.html">Regresar</a>
+            <button class="btn btn-success" onclick="salir()">Salir del sistema</button>
+        </div>
+
+        <table id="tablaResultado">
+            <tr><th>Código</th><td id="r_codigo"></td></tr>
+            <tr><th>Nombre</th><td id="r_nombre"></td></tr>
+            <tr><th>Descripción</th><td id="r_descripcion"></td></tr>
+            <tr><th>Precio</th><td id="r_precio"></td></tr>
+            <tr><th>Stock</th><td id="r_stock"></td></tr>
+            <tr><th>Categoría</th><td id="r_categoria"></td></tr>
+        </table>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:5000";
+
+        if (!localStorage.getItem("usuario")) {
+            window.location.href = "login.html";
+        }
+
+        async function buscarProducto() {
+            let codigo = document.getElementById("codigo").value;
+
+            let respuesta = await fetch(API_URL + "/api/buscar_producto", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ codigo: codigo })
+            });
+
+            let data = await respuesta.json();
+
+            if (data.encontrado) {
+                document.getElementById("tablaResultado").style.display = "table";
+                document.getElementById("r_codigo").innerText = data.codigo;
+                document.getElementById("r_nombre").innerText = data.nombre;
+                document.getElementById("r_descripcion").innerText = data.descripcion;
+                document.getElementById("r_precio").innerText = "S/ " + data.precio;
+                document.getElementById("r_stock").innerText = data.stock;
+                document.getElementById("r_categoria").innerText = data.categoria;
+            } else {
+                alert("Producto no encontrado");
+                document.getElementById("tablaResultado").style.display = "none";
+            }
+        }
+
+        function salir() {
+            localStorage.removeItem("usuario");
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+</html>

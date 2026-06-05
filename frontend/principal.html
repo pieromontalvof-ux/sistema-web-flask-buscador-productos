@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Principal</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: white; }
+        .container { width: 75%; margin: 70px auto; }
+        h1 { text-align: center; font-size: 42px; margin-bottom: 40px; }
+        h2 { text-align: center; font-size: 28px; margin-bottom: 50px; }
+        .btn { padding: 12px 22px; border: 1px solid #17c8f5; color: #17c8f5; background: white; border-radius: 5px; text-decoration: none; font-size: 20px; cursor: pointer; margin: 10px; }
+        .btn-success { border-color: #198754; color: #198754; }
+        .center { text-align: center; margin-bottom: 40px; }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🏠 Panel Principal</h1>
+
+        <h2 id="bienvenida"></h2>
+
+        <div class="center">
+            <a class="btn" href="buscador.html">Ir al Buscador</a>
+            <button class="btn btn-success" onclick="salir()">Salir del sistema</button>
+        </div>
+    </div>
+
+    <script>
+        let usuario = localStorage.getItem("usuario");
+
+        if (!usuario) {
+            window.location.href = "login.html";
+        } else {
+            document.getElementById("bienvenida").innerText = "Bienvenido " + usuario;
+        }
+
+        function salir() {
+            localStorage.removeItem("usuario");
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+</html>

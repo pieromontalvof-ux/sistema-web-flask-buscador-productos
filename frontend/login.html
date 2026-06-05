@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: white; }
+        .container { width: 75%; margin: 70px auto; }
+        h1 { text-align: center; font-size: 42px; margin-bottom: 60px; }
+        input { width: 100%; padding: 14px; font-size: 20px; margin-top: 10px; margin-bottom: 25px; border: 1px solid #ccc; border-radius: 4px; }
+        label { font-size: 20px; }
+        .btn { padding: 12px 22px; border: 1px solid #17c8f5; color: #17c8f5; background: white; border-radius: 5px; font-size: 20px; cursor: pointer; }
+        .btn-success { border-color: #198754; color: #198754; }
+        .center { text-align: center; margin-bottom: 40px; }
+        .error { color: red; text-align: center; font-size: 18px; }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔐 Login</h1>
+
+        <form id="formLogin">
+            <label>Usuario</label>
+            <input type="text" id="username" required>
+
+            <label>Contraseña</label>
+            <input type="password" id="password" required>
+
+            <div class="center">
+                <button class="btn btn-success" type="submit">Ingresar</button>
+            </div>
+        </form>
+
+        <p id="error" class="error"></p>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:5000";
+
+        document.getElementById("formLogin").addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+
+            let respuesta = await fetch(API_URL + "/api/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username: username, password: password })
+            });
+
+            let data = await respuesta.json();
+
+            if (data.acceso) {
+                localStorage.setItem("usuario", data.nombre);
+                window.location.href = "principal.html";
+            } else {
+                document.getElementById("error").innerText = data.mensaje;
+            }
+        });
+    </script>
+</body>
+</html>
